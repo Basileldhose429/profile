@@ -156,4 +156,80 @@ fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated`)
       `;
             container.appendChild(card);
         });
+
     });
+
+/* ================= SPOTIFY SYNC ================= */
+// 🚨 FILL THESE IN FROM THE SETUP GUIDE 🚨
+const CLIENT_ID = 'YOUR_CLIENT_ID_HERE';
+const CLIENT_SECRET = 'YOUR_CLIENT_SECRET_HERE';
+const REFRESH_TOKEN = 'YOUR_REFRESH_TOKEN_HERE';
+
+async function getAccessToken() {
+    const basic = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${basic}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+            grant_type: 'refresh_token',
+            refresh_token: REFRESH_TOKEN
+        })
+    });
+    return response.json();
+}
+
+async function getNowPlaying() {
+    try {
+        const { access_token } = await getAccessToken();
+        const response = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+            headers: {
+                'Authorization': `Bearer ${access_token}`
+            }
+        });
+
+        if (response.status === 204 || response.status > 400) {
+            return null; // Nothing playing or error
+        }
+
+        return response.json();
+    } catch (error) {
+        console.error("Error fetching Spotify data:", error);
+        return null;
+    }
+}
+
+let currentTrackId = '0VjIjW4GlUZAMYd2vXMi3b'; // Default: Blinding Lights
+
+async function updateSpotifyPlayer() {
+    if (CLIENT_ID === 'YOUR_CLIENT_ID_HERE') {
+        console.log("Spotify credentials not set. Skipping sync.");
+        return;
+    }
+
+    const data = await getNowPlaying();
+
+    if (data && data.item && data.item.id) {
+        const newTrackId = data.item.id;
+
+        if (newTrackId !== currentTrackId) {
+            console.log(`Track changed: ${data.item.name} by ${data.item.artists[0].name}`);
+            currentTrackId = newTrackId;
+
+            // Update iframe src
+            const iframe = document.querySelector('iframe[src*="spotify.com"]');
+            if (iframe) {
+                iframe.src = `https://open.spotify.com/embed/track/${newTrackId}?utm_source=generator&theme=0`;
+            }
+        }
+    }
+}
+
+// Check every 30 seconds
+setInterval(updateSpotifyPlayer, 30000);
+// Check immediately on load
+updateSpotifyPlayer();
+
+
