@@ -70,13 +70,38 @@ h3 {
   background: linear-gradient(to right, #fff, #888);
   background-clip: text;
   -webkit-background-clip: text;
+  color: transparent; /* Ensures fallback text color isn't completely ignored */
   -webkit-text-fill-color: transparent;
+  animation: glitch-anim 3s infinite linear alternate-reverse;
 }
 
 .hero-text .highlight {
   color: var(--accent);
   -webkit-text-fill-color: var(--accent);
   text-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+  display: inline-block;
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% {
+    transform: translate(0)
+  }
+  20% {
+    transform: translate(-2px, 2px)
+  }
+  40% {
+    transform: translate(-2px, -2px)
+  }
+  60% {
+    transform: translate(2px, 2px)
+  }
+  80% {
+    transform: translate(2px, -2px)
+  }
+  100% {
+    transform: translate(0)
+  }
 }
 
 .tagline {
