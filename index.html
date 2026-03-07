@@ -1,113 +1,508 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Basil Eldhose | Security Research</title>
+  <meta name="description" content="Ethical hacker, penetration tester and web developer. Building secure systems and exploring vulnerabilities.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --green:   #00ff41;
+      --green-dim: #008f11;
+      --dark:    #020202;
+      --panel:   rgba(0,255,65,0.03);
+      --border:  rgba(0,255,65,0.3);
+      --glow-g:  rgba(0,255,65,0.4);
+      --mono:    'Space Mono', 'Share Tech Mono', monospace;
+    }
 
-<title>Basil Eldhose | Cybersecurity & Web Developer</title>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    body {
+      font-family: var(--mono);
+      background: var(--dark);
+      color: var(--green);
+      overflow-x: hidden;
+    }
+    body.booting { overflow: hidden; }
 
-<link rel="stylesheet" href="style.css">
+    /* ── BOOT SEQUENCE ── */
+    #boot-screen {
+      position: fixed; inset: 0;
+      background: var(--dark);
+      z-index: 10000;
+      display: flex; flex-direction: column;
+      padding: 40px;
+      font-family: var(--mono);
+      font-size: 1rem;
+      color: var(--green);
+      line-height: 1.6;
+    }
+    #boot-text { white-space: pre-wrap; word-break: break-all; }
+    .boot-cursor {
+      display: inline-block; width: 10px; height: 18px;
+      background: var(--green);
+      animation: blink 0.8s step-end infinite;
+    }
+
+    /* ── SCANLINES & CRT ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,255,65,0.03) 2px,
+        rgba(0,255,65,0.03) 4px
+      );
+      pointer-events: none; z-index: 9998;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(circle, transparent 50%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--dark); border-left: 1px solid var(--green-dim); }
+    ::-webkit-scrollbar-thumb { background: var(--green); }
+
+    /* ── MATRIX CANVAS ── */
+    #matrix {
+      position: fixed; inset: 0;
+      z-index: 0; pointer-events: none; opacity: 0.15;
+    }
+
+    /* ── CURSOR GLOW ── */
+    .cursor-glow {
+      position: fixed;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,65,0.05) 0%, transparent 60%);
+      transform: translate(-50%,-50%);
+      pointer-events: none; z-index: 1;
+      transition: left 0.15s ease, top 0.15s ease;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 5%;
+      background: rgba(2,2,2,0.85);
+      border-bottom: 1px solid var(--green-dim);
+      backdrop-filter: blur(10px);
+    }
+    .nav-logo {
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--green); text-shadow: 0 0 10px var(--glow-g);
+    }
+    .nav-logo span { color: #888; }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      font-size: 0.85rem; color: #888;
+      text-decoration: none; transition: 0.3s;
+      text-transform: lowercase;
+    }
+    .nav-links a:hover { color: var(--green); text-shadow: 0 0 8px var(--green); }
+    .nav-links a::before { content: '['; opacity: 0; margin-right: 5px; color: var(--green); transition: 0.3s; }
+    .nav-links a::after  { content: ']'; opacity: 0; margin-left: 5px; color: var(--green); transition: 0.3s; }
+    .nav-links a:hover::before, .nav-links a:hover::after { opacity: 1; }
+
+    .hamburger { display: none; flex-direction: column; gap: 6px; cursor: pointer; }
+    .hamburger span { width: 30px; height: 2px; background: var(--green); display: block; }
+    @media(max-width:800px) { .nav-links { display: none; } .hamburger { display: flex; } }
+
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.98);
+      flex-direction: column; align-items: center; justify-content: center; gap: 40px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1.5rem; color: var(--green); text-decoration: none; }
+    .mobile-menu a::before { content: '> '; }
+    .close-btn { position: absolute; top: 30px; right: 7%; font-size: 2rem; color: var(--green-dim); cursor: pointer; }
+
+    /* ── GLITCH EFFECT ── */
+    .glitch {
+      position: relative;
+      color: var(--green);
+      display: inline-block;
+    }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--dark);
+    }
+    .glitch::before {
+      left: 2px; text-shadow: -2px 0 red;
+      clip: rect(44px, 450px, 56px, 0);
+      animation: glitch-anim 2.5s infinite linear alternate-reverse;
+    }
+    .glitch::after {
+      left: -2px; text-shadow: -2px 0 blue;
+      clip: rect(44px, 450px, 56px, 0);
+      animation: glitch-anim2 3s infinite linear alternate-reverse;
+    }
+    @keyframes glitch-anim {
+      0% { clip: rect(12px, 9999px, 9px, 0); }
+      20% { clip: rect(42px, 9999px, 63px, 0); }
+      40% { clip: rect(62px, 9999px, 83px, 0); }
+      60% { clip: rect(32px, 9999px, 12px, 0); }
+      80% { clip: rect(82px, 9999px, 53px, 0); }
+      100% { clip: rect(22px, 9999px, 33px, 0); }
+    }
+    @keyframes glitch-anim2 {
+      0% { clip: rect(82px, 9999px, 53px, 0); }
+      20% { clip: rect(22px, 9999px, 33px, 0); }
+      40% { clip: rect(12px, 9999px, 9px, 0); }
+      60% { clip: rect(62px, 9999px, 83px, 0); }
+      80% { clip: rect(32px, 9999px, 12px, 0); }
+      100% { clip: rect(42px, 9999px, 63px, 0); }
+    }
+
+    /* ── HERO ── */
+    #home {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 120px 7% 50px;
+      position: relative; z-index: 1;
+    }
+    .hero-content { flex: 1; animation: fadeUp 1s ease both; }
+    
+    .sys-status {
+      display: inline-block; padding: 4px 12px; margin-bottom: 30px;
+      border: 1px solid var(--green); background: rgba(0,255,65,0.1);
+      font-size: 0.75rem; text-transform: uppercase;
+      box-shadow: 0 0 10px var(--glow-g);
+    }
+    .sys-status::before { content: '[ OK ]'; margin-right: 8px; font-weight: bold; }
+
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700; line-height: 1.1; margin-bottom: 20px;
+      color: #fff;
+    }
+    .hero-content p.desc {
+      font-size: 1rem; color: #888;
+      max-width: 500px; line-height: 1.8; margin-bottom: 40px;
+    }
+    .hero-content p.desc span { color: var(--green); }
+
+    .btns { display: flex; gap: 20px; }
+    .btn {
+      padding: 12px 24px; font-family: var(--mono);
+      font-size: 0.9rem; text-decoration: none;
+      text-transform: uppercase; letter-spacing: 1px;
+      border: 1px solid var(--green); color: var(--green);
+      background: transparent; cursor: pointer;
+      position: relative; overflow: hidden;
+      transition: 0.3s;
+    }
+    .btn:hover { background: var(--green); color: #000; box-shadow: 0 0 20px var(--glow-g); }
+    .btn::before { content: '>'; margin-right: 8px; }
+
+    /* Profile / Terminal Right Side */
+    .hero-visuals {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 30px;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+    .target-box {
+      position: relative; width: 200px; height: 200px;
+    }
+    .target-br {
+      position: absolute; width: 20px; height: 20px; border: 2px solid var(--green);
+    }
+    .tl { top:0; left:0; border-right:none; border-bottom:none; }
+    .tr { top:0; right:0; border-left:none; border-bottom:none; }
+    .bl { bottom:0; left:0; border-right:none; border-top:none; }
+    .br { bottom:0; right:0; border-left:none; border-top:none; }
+    
+    .profile-img {
+      position: absolute; inset: 10px; width: calc(100% - 20px); height: calc(100% - 20px);
+      object-fit: cover; filter: grayscale(100%) contrast(120%) sepia(100%) hue-rotate(80deg) saturate(300%);
+      opacity: 0.8;
+    }
+    .profile-overlay {
+      position: absolute; inset: 10px; background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,65,0.2) 2px, rgba(0,255,65,0.2) 4px);
+    }
+
+    .term-window {
+      width: 100%; max-width: 400px;
+      border: 1px solid var(--green-dim);
+      background: rgba(0,0,0,0.8);
+      font-size: 0.8rem; line-height: 1.6;
+    }
+    .term-header {
+      background: var(--green-dim); color: #000;
+      padding: 4px 10px; font-weight: bold;
+      display: flex; justify-content: space-between;
+    }
+    .term-body { padding: 15px; }
+    .cmd-line { margin-bottom: 5px; }
+    .cmd-line span.path { color: #888; }
+    .cmd-line span.cmd { color: #fff; }
+    .cmd-out { color: var(--green); margin-bottom: 15px; }
+    .terminal-cursor { display: inline-block; width: 8px; height: 14px; background: var(--green); animation: blink 1s step-end infinite; vertical-align: middle; }
+
+    @media(max-width:900px) {
+      #home { flex-direction: column; text-align: left; }
+      .hero-visuals { width: 100%; margin-top: 50px; }
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 80px 7%; position: relative; z-index: 1; }
+    .sec-header { margin-bottom: 40px; border-bottom: 1px dashed var(--green-dim); padding-bottom: 10px; }
+    .sec-header h2 { font-size: 2rem; color: #fff; }
+    .sec-header h2::before { content: 'root@kali# ./'; color: var(--green); font-size: 1.2rem; }
+    
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+    }
+    .sk-card {
+      border: 1px solid var(--green-dim); background: rgba(0,20,0,0.6);
+      padding: 25px; transition: 0.3s;
+    }
+    .sk-card:hover { border-color: var(--green); box-shadow: 0 0 15px var(--glow-g); transform: translateY(-3px); }
+    .sk-card h3 { font-size: 1.1rem; margin-bottom: 10px; color: #fff; }
+    .sk-card h3::before { content: '>'; color: var(--green); margin-right: 8px; }
+    .sk-card p { color: #888; font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px; }
+    
+    .tech-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tech-list span {
+      font-size: 0.7rem; padding: 2px 8px;
+      border: 1px solid #444; color: #aaa;
+    }
+
+    /* ── PROJECTS ── */
+    .proj-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+    }
+    .pj-card {
+      border: 1px solid var(--green-dim); background: rgba(0,20,0,0.6);
+      padding: 25px; transition: 0.3s; cursor: pointer; text-decoration: none; display: block;
+    }
+    .pj-card:hover { border-color: var(--green); background: rgba(0,255,65,0.05); }
+    .pj-title { font-size: 1.1rem; color: #fff; margin-bottom: 10px; }
+    .pj-desc { color: #888; font-size: 0.85rem; line-height: 1.6; }
+    .pj-meta { margin-top: 15px; font-size: 0.75rem; color: var(--green); display: flex; justify-content: space-between; }
+
+    /* ── CONTACT ── */
+    .contact-container { display: flex; gap: 50px; flex-wrap: wrap; }
+    .contact-info { flex: 1; min-width: 300px; }
+    .contact-info p { color: #888; line-height: 1.8; margin-bottom: 30px; }
+    .c-links a { display: block; color: var(--green); text-decoration: none; margin-bottom: 15px; font-size: 0.9rem; }
+    .c-links a:hover { text-shadow: 0 0 8px var(--green); }
+    .c-links a::before { content: '[ '; color: #555; }
+    .c-links a::after { content: ' ]'; color: #555; }
+
+    .contact-form { flex: 1; min-width: 300px; }
+    .input-grp { margin-bottom: 20px; }
+    .input-grp input, .input-grp textarea {
+      width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--green-dim);
+      color: var(--green); font-family: var(--mono); padding: 10px 0; outline: none; transition: 0.3s;
+    }
+    .input-grp input:focus, .input-grp textarea:focus { border-bottom-color: var(--green); box-shadow: 0 2px 10px rgba(0,255,65,0.2); }
+    .input-grp textarea { height: 100px; resize: none; border: 1px solid var(--green-dim); padding: 10px; }
+
+    /* ── FOOTER ── */
+    footer { border-top: 1px dashed var(--green-dim); padding: 30px 7%; text-align: center; color: #555; font-size: 0.8rem; }
+    
+    /* ── AUDIO PLAYER ── */
+    .audio-player {
+      position: fixed; bottom: 20px; right: 20px; z-index: 2000;
+      border: 1px solid var(--green); background: rgba(0,0,0,0.8);
+      padding: 8px 15px; display: flex; align-items: center; gap: 15px;
+      box-shadow: 0 0 15px rgba(0,255,65,0.2);
+    }
+    .audio-player button { background: transparent; border: none; color: var(--green); font-family: var(--mono); cursor: pointer; }
+    .audio-player button:hover { text-shadow: 0 0 8px var(--green); }
+    .track-name { font-size: 0.75rem; }
+    .progress { width: 80px; height: 2px; background: #222; cursor: pointer; position: relative; }
+    .progress-bar { height: 100%; background: var(--green); width: 0%; }
+
+    @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  </style>
 </head>
-
 <body>
 
-<audio id="bg-audio" autoplay loop>
-  <source src="audio.mpeg" type="audio/mpeg">
-</audio>
+  <!-- BOOT SEQUENCE OVERLAY -->
+  <div id="boot-screen">
+    <div id="boot-text"></div>
+    <div><span class="boot-cursor"></span></div>
+  </div>
 
-<canvas id="particles"></canvas>
+  <!-- MATRIX BACKGROUND -->
+  <canvas id="matrix"></canvas>
+  <div class="cursor-glow" id="cursorGlow"></div>
 
-<div class="container">
+  <!-- AUDIO PLAYER -->
+  <div class="audio-player">
+    <button id="audioPlayBtn">[ PLAY ]</button>
+    <span class="track-name">BGM.mp3</span>
+    <div class="progress" id="audioProgressWrap">
+      <div class="progress-bar" id="audioProgressBar"></div>
+    </div>
+    <button id="audioVolBtn">VOL:ON</button>
+    <audio id="bgAudio" src="audio.mpeg" loop preload="auto"></audio>
+  </div>
 
-<!-- HERO -->
-<section class="hero">
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <span class="close-btn" id="closeMenu">[X]</span>
+    <a href="#home" onclick="closeMob()">home</a>
+    <a href="#skills" onclick="closeMob()">skills</a>
+    <a href="#projects" onclick="closeMob()">projects</a>
+    <a href="#contact" onclick="closeMob()">contact</a>
+  </div>
 
-<div class="hero-text">
-<h1>Basil <span class="highlight">Eldhose</span></h1>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">sysadmin@kali:<span>~</span>$</div>
+    <ul class="nav-links">
+      <li><a href="#home">home</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamBtn">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
 
-<p class="tagline">Ethical Hacker • Web Developer • Cybersecurity Student</p>
+  <!-- ══ HERO ══ -->
+  <section id="home">
+    <div class="hero-content">
+      <div class="sys-status">System Online _ Access Granted</div>
+      <h1 class="glitch" data-text="Basil Eldhose">Basil Eldhose</h1>
+      <p class="desc">
+        > <span style="color:#fff">Role:</span> Ethical Hacker / Penetration Tester / Web Dev<br>
+        > <span style="color:#fff">Status:</span> Exploring vulnerabilities & building secure architectures.<br><br>
+        I break systems ethically to understand their flaws, ensuring that real attackers hit a brick wall. <span>Security is not a product, but a process.</span>
+      </p>
+      <div class="btns">
+        <a href="#projects" class="btn">Execute ./projects.sh</a>
+        <a href="#contact" class="btn">Execute ./contact.sh</a>
+      </div>
+    </div>
 
-<p class="bio">
-Curious cybersecurity enthusiast exploring penetration testing,
-web security, and secure system design. I build websites,
-analyze vulnerabilities, and learn how systems break —
-so they can be made stronger.
-</p>
+    <div class="hero-visuals">
+      <!-- Target Profile -->
+      <div class="target-box" data-depth="20">
+        <div class="target-br tl"></div>
+        <div class="target-br tr"></div>
+        <div class="target-br bl"></div>
+        <div class="target-br br"></div>
+        <img src="profile.png" alt="Target" class="profile-img">
+        <div class="profile-overlay"></div>
+      </div>
 
-<div class="buttons">
-<a href="https://github.com/" target="_blank">GitHub</a>
-<a href="#">LinkedIn</a>
-<a href="#">Contact</a>
-</div>
+      <!-- Raw Terminal -->
+      <div class="term-window" data-depth="10">
+        <div class="term-header">
+          <span>root@kali:~</span>
+          <span>_ □ X</span>
+        </div>
+        <div class="term-body">
+          <div class="cmd-line"><span class="path">root@kali:~$</span> <span class="cmd">whoami</span></div>
+          <div class="cmd-out">basil_eldhose</div>
+          
+          <div class="cmd-line"><span class="path">root@kali:~$</span> <span class="cmd">cat skills.txt | grep 'Expert'</span></div>
+          <div class="cmd-out">Penetration Testing, Web Security<br>Network Analysis, Cryptography</div>
+          
+          <div class="cmd-line"><span class="path">root@kali:~$</span> <span class="cmd">./init_connection.sh</span></div>
+          <div class="cmd-out">Establishing secure tunnel... Done.</div>
+          
+          <div class="cmd-line"><span class="path">root@kali:~$</span> <span class="terminal-cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-</div>
+  <!-- ══ SKILLS ══ -->
+  <section id="skills">
+    <div class="sec-header">
+      <h2 class="glitch" data-text="analyze_skills.py">analyze_skills.py</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="sk-card">
+        <h3>Offensive Security</h3>
+        <p>Experienced in finding and exploiting vulnerabilities in web applications, networks, and systems using industry-standard methodologies.</p>
+        <div class="tech-list">
+          <span>Burp Suite</span><span>Metasploit</span><span>Nmap</span><span>Wireshark</span>
+        </div>
+      </div>
+      <div class="sk-card" style="transition-delay:0.1s">
+        <h3>Secure Web Dev</h3>
+        <p>Building hardened web applications with modern frameworks, ensuring robust authentication, input validation, and data protection.</p>
+        <div class="tech-list">
+          <span>JavaScript</span><span>Node.js</span><span>HTML/CSS</span><span>OWASP</span>
+        </div>
+      </div>
+      <div class="sk-card" style="transition-delay:0.2s">
+        <h3>System & Scripting</h3>
+        <p>Automating security workflows and writing custom exploit scripts or enumeration tools tailored to specific environments.</p>
+        <div class="tech-list">
+          <span>Python</span><span>Bash</span><span>C</span><span>Linux</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="profile-wrapper" data-depth="25">
-  <div class="profile-glow"></div>
-  <img src="profile.png" alt="Basil Eldhose" class="profile-img">
-</div>
+  <!-- ══ PROJECTS ══ -->
+  <section id="projects">
+    <div class="sec-header">
+      <h2 class="glitch" data-text="ls -la /opt/projects">ls -la /opt/projects</h2>
+    </div>
+    <div class="proj-grid" id="github-projects">
+      <div class="pj-card"><p style="color:#555">Fetching from remote server...</p></div>
+    </div>
+  </section>
 
-<div class="terminal">
-<p>> initializing portfolio...</p>
-<p>> loading security modules...</p>
-<p>> welcome basil_eldhose</p>
-</div>
+  <!-- ══ CONTACT ══ -->
+  <section id="contact">
+    <div class="sec-header">
+      <h2 class="glitch" data-text="ssh basil@contact_node">ssh basil@contact_node</h2>
+    </div>
+    <div class="contact-container">
+      <div class="contact-info">
+        <p>Open for collaboration on security research, CTFs, or freelance pentesting engagements. Secure channels established below.</p>
+        <div class="c-links">
+          <a href="#">EMAIL :: basil@example.com</a>
+          <a href="https://github.com/Basileldhose429" target="_blank">GITHUB :: github.com/Basileldhose429</a>
+          <a href="#">LINKEDIN :: linkedin.com/in/basileldhose</a>
+          <a href="https://www.instagram.com/1__basil_eldhose__1?igsh=MWY3MGNjdGV6YzQzYg==" target="_blank">INSTAGRAM :: @1__basil_eldhose__1</a>
+        </div>
+      </div>
+      <div class="contact-form" style="transition-delay:0.1s">
+        <div class="input-grp">
+          <input type="text" placeholder="Incoming_Identity (Name)">
+        </div>
+        <div class="input-grp">
+          <input type="email" placeholder="Return_Vector (Email)">
+        </div>
+        <div class="input-grp">
+          <textarea placeholder="Payload (Message)"></textarea>
+        </div>
+        <button class="btn" id="sendBtn">Transmit Payload</button>
+      </div>
+    </div>
+  </section>
 
-</section>
+  <footer>
+    EOF. Process terminated. © 2026 Basil Eldhose.
+  </footer>
 
-<!-- SKILLS -->
-<section class="section">
-
-<h2>Skills</h2>
-
-<div class="grid">
-
-<div class="card">
-<h3>Cybersecurity</h3>
-<p>Basic penetration testing, vulnerability discovery, secure coding awareness.</p>
-</div>
-
-<div class="card">
-<h3>Web Development</h3>
-<p>HTML, CSS, JavaScript, responsive UI design.</p>
-</div>
-
-<div class="card">
-<h3>Programming</h3>
-<p>C programming, algorithms, system thinking.</p>
-</div>
-
-<div class="card">
-<h3>Tools</h3>
-<p>Git, GitHub, Linux basics, developer tooling.</p>
-</div>
-
-</div>
-
-</section>
-
-<!-- PROJECTS -->
-<section class="section">
-
-<h2>GitHub Projects</h2>
-
-<div id="github-projects" class="grid">
-<div class="card">Loading projects...</div>
-</div>
-
-</section>
-
-<footer>
-© 2026 Basil Eldhose • Security Engineering Portfolio
-</footer>
-
-</div>
-
-<script src="script.js"></script>
-
+  <script src="script.js"></script>
 </body>
 </html>
