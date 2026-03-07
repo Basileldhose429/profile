@@ -1,69 +1,86 @@
-/* ================= PARTICLE SYSTEM ================= */
-const canvas = document.getElementById('particles');
+/* ================= BOOT SEQUENCE ================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const bootText = document.getElementById("boot-text");
+  const bootScreen = document.getElementById("boot-screen");
+  
+  const lines = [
+    "BIOS check... OK",
+    "Loading kernel... OK",
+    "Mounting file systems... OK",
+    "Starting network interfaces... eth0 UP",
+    "Establishing secure tunnel...",
+    "Connection established.",
+    "Bypassing firewall... SUCCESS",
+    "Accessing mainframe... ",
+    "Welcome, basil_eldhose."
+  ];
+
+  let currentLine = 0;
+  
+  function typeLine() {
+    if (currentLine < lines.length) {
+      bootText.innerHTML += lines[currentLine] + "<br>";
+      currentLine++;
+      setTimeout(typeLine, Math.random() * 200 + 100);
+    } else {
+      setTimeout(() => {
+        bootScreen.style.transition = "opacity 0.8s ease";
+        bootScreen.style.opacity = "0";
+        setTimeout(() => {
+          bootScreen.style.display = "none";
+          document.body.classList.remove("booting");
+        }, 800);
+      }, 500);
+    }
+  }
+
+  // Start sequence
+  document.body.classList.add("booting");
+  setTimeout(typeLine, 500);
+});
+
+/* ================= MATRIX RAIN ================= */
+const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
-let width, height;
 
-function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-const particles = [];
-const particleCount = 60;
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+const charArray = chars.split("");
 
-class Particle {
-    constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.size = Math.random() * 2;
-        this.color = Math.random() > 0.5 ? '#00ff88' : '#7000ff';
-    }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
-    }
-    draw() {
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = 0.4;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for (let x = 0; x < columns; x++) {
+  drops[x] = 1;
 }
 
-for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+function drawMatrix() {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-function animateParticles() {
-    ctx.clearRect(0, 0, width, height);
-    particles.forEach(p => {
-        p.update();
-        p.draw();
-        // Connections
-        particles.forEach(p2 => {
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 100) {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-                ctx.lineWidth = 0.5;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(p2.x, p2.y);
-                ctx.stroke();
-            }
-        });
-    });
-    requestAnimationFrame(animateParticles);
+  ctx.fillStyle = "#00ff41";
+  ctx.font = fontSize + "px monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = charArray[Math.floor(Math.random() * charArray.length)];
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
 }
-animateParticles();
+
+setInterval(drawMatrix, 33);
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
 
 
 /* ================= ANTIGRAVITY ENGINE ================= */
@@ -90,70 +107,102 @@ function animateAntigravity() {
 animateAntigravity();
 
 /* ================= GITHUB FETCH ================= */
-// Using a default user or error handling if blank
-const USERNAME = 'basil-eldhose'; // Placeholder, user can change
+const USERNAME = 'Basileldhose429';
 
 fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated`)
-    .then(res => {
-        if (!res.ok) throw new Error("User not found");
-        return res.json();
-    })
-    .then(data => {
-        const container = document.getElementById("github-projects");
-        container.innerHTML = ''; // Clear placeholder
+  .then(res => {
+    if (!res.ok) throw new Error("HTTP error " + res.status);
+    return res.json();
+  })
+  .then(data => {
+    const container = document.getElementById("github-projects");
+    container.innerHTML = '';
 
-        const list = Array.isArray(data) ? data : [];
+    const list = Array.isArray(data) ? data : [];
+    if (list.length === 0) throw new Error("No repos found");
 
-        if (list.length === 0) {
-            // If valid user but no repos, or empty array, fall through to mock might be better?
-            // But usually empty array means just no repos.
-            // Let's force error to trigger mock data if list is empty for this demo
-            throw new Error("No repos found, triggering mock");
-        }
-
-        list.slice(0, 4).forEach(repo => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.setAttribute("data-depth", "25");
-
-            card.innerHTML = `
-        <div class="card-glow"></div>
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-        <div style="margin-top:15px; font-size:0.8rem; color:#666;">
-          ⭐ ${repo.stargazers_count} • 🔠 ${repo.language || "N/A"}
+    list.slice(0, 4).forEach(repo => {
+      const card = document.createElement("a");
+      card.href = repo.html_url;
+      card.target = "_blank";
+      // Removed 'reveal' to prevent them from staying invisible, added 'visible' to skip animation tracking
+      card.className = "pj-card visible";
+      
+      card.innerHTML = `
+        <div class="pj-title">${repo.name}</div>
+        <div class="pj-desc">${repo.description || "No description provided."}</div>
+        <div class="pj-meta">
+          <span>[Lang: ${repo.language || "N/A"}]</span>
+          <span>[Stars: ${repo.stargazers_count}]</span>
         </div>
       `;
-            container.appendChild(card);
-        });
-    })
-    .catch(err => {
-        console.log("Fetching failed or no repos, using mock data:", err);
-
-        // Fallback to mock data
-        const mockRepos = [
-            { name: "security-scanner", description: "Automated vulnerability scanner for web applications.", stargazers_count: 128, language: "Python" },
-            { name: "packet-sniffer", description: "Network traffic analysis tool for security auditing.", stargazers_count: 85, language: "C++" },
-            { name: "auth-guard", description: "JWT-based authentication middleware with rate limiting.", stargazers_count: 240, language: "JavaScript" },
-            { name: "zero-trust-proxy", description: "Implementation of zero trust architecture principles.", stargazers_count: 95, language: "Go" },
-        ];
-
-        const container = document.getElementById("github-projects");
-        container.innerHTML = '';
-
-        mockRepos.forEach(repo => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.setAttribute("data-depth", "25");
-
-            card.innerHTML = `
-        <div class="card-glow"></div>
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-        <div style="margin-top:15px; font-size:0.8rem; color:#666;">
-          ⭐ ${repo.stargazers_count} • 🔠 ${repo.language || "N/A"}
-        </div>
-      `;
-            container.appendChild(card);
-        });
+      container.appendChild(card);
     });
+  })
+  .catch(err => {
+    console.log("GitHub API fallback:", err);
+    // Mock data
+    const mockRepos = [
+      { name: "security-scanner", description: "Automated vulnerability scanner for web applications.", stargazers_count: 128, language: "Python" },
+      { name: "packet-sniffer", description: "Network traffic analysis tool for security auditing.", stargazers_count: 85, language: "C" },
+      { name: "auth-guard", description: "JWT-based authentication middleware with rate limiting.", stargazers_count: 240, language: "Go" },
+      { name: "zero-trust-proxy", description: "Implementation of zero trust architecture principles.", stargazers_count: 95, language: "Rust" },
+    ];
+
+    const container = document.getElementById("github-projects");
+    container.innerHTML = '';
+
+    mockRepos.forEach(repo => {
+      const card = document.createElement("a");
+      card.href = "#";
+      // Removed 'reveal' to prevent them from staying invisible, added 'visible'
+      card.className = "pj-card visible";
+      
+      card.innerHTML = `
+        <div class="pj-title">${repo.name}</div>
+        <div class="pj-desc">${repo.description || "No description provided."}</div>
+        <div class="pj-meta">
+          <span>[Lang: ${repo.language || "N/A"}]</span>
+          <span>[Stars: ${repo.stargazers_count}]</span>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  });
+
+/* ================= AUDIO PLAYER ================= */
+const bgAudio = document.getElementById("bgAudio");
+const playBtn = document.getElementById("audioPlayBtn");
+const volBtn = document.getElementById("audioVolBtn");
+const progressBar = document.getElementById("audioProgressBar");
+const progressWrap = document.getElementById("audioProgressWrap");
+
+let isPlaying = false;
+
+playBtn.addEventListener("click", () => {
+  if (isPlaying) {
+    bgAudio.pause();
+    playBtn.innerText = "[ PLAY ]";
+  } else {
+    bgAudio.play().catch(e => console.log("Audio play failed:", e));
+    playBtn.innerText = "[ PAUSE ]";
+  }
+  isPlaying = !isPlaying;
+});
+
+volBtn.addEventListener("click", () => {
+  bgAudio.muted = !bgAudio.muted;
+  volBtn.innerText = bgAudio.muted ? "VOL:OFF" : "VOL:ON";
+  volBtn.style.color = bgAudio.muted ? "#555" : "var(--green)";
+});
+
+bgAudio.addEventListener("timeupdate", () => {
+  const percent = (bgAudio.currentTime / bgAudio.duration) * 100;
+  progressBar.style.width = percent + "%";
+});
+
+progressWrap.addEventListener("click", (e) => {
+  const rect = progressWrap.getBoundingClientRect();
+  const percent = (e.clientX - rect.left) / rect.width;
+  bgAudio.currentTime = percent * bgAudio.duration;
+});
