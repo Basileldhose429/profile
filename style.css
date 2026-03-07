@@ -1,12 +1,12 @@
 :root {
-  --bg: #020202;
+  --bg: #050507;
   --text: #e0e0e0;
   --accent: #00ff88;
-  /* Cyberpunk/Hacker Green */
-  --accent-secondary: #008f4c;
-  /* Darker Hacker Green */
-  --glass: rgba(0, 255, 136, 0.03);
-  --border: rgba(0, 255, 136, 0.15);
+  /* Cyberpunk Green */
+  --accent-secondary: #7000ff;
+  /* Deep Purple */
+  --glass: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -22,24 +22,6 @@ body {
   /* Tech feel */
   overflow-x: hidden;
   min-height: 100vh;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0.15) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-  pointer-events: none;
-  z-index: 999;
 }
 
 h1,
@@ -88,32 +70,46 @@ h3 {
   background: linear-gradient(to right, #fff, #888);
   background-clip: text;
   -webkit-background-clip: text;
+  color: transparent; /* Ensures fallback text color isn't completely ignored */
   -webkit-text-fill-color: transparent;
+  animation: glitch-anim 3s infinite linear alternate-reverse;
 }
 
 .hero-text .highlight {
   color: var(--accent);
   -webkit-text-fill-color: var(--accent);
   text-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+  display: inline-block;
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% {
+    transform: translate(0)
+  }
+  20% {
+    transform: translate(-2px, 2px)
+  }
+  40% {
+    transform: translate(-2px, -2px)
+  }
+  60% {
+    transform: translate(2px, 2px)
+  }
+  80% {
+    transform: translate(2px, -2px)
+  }
+  100% {
+    transform: translate(0)
+  }
 }
 
 .tagline {
-  color: var(--accent);
-  font-family: 'Space Mono', monospace;
+  color: var(--accent-secondary);
   font-size: 0.9rem;
   letter-spacing: 2px;
   margin-bottom: 25px;
   text-transform: uppercase;
-}
-
-.tagline::after {
-  content: '_';
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
 }
 
 .bio {
@@ -146,7 +142,7 @@ h3 {
 .profile-glow {
   position: absolute;
   inset: -20px;
-  background: radial-gradient(circle, var(--accent), transparent 70%);
+  background: radial-gradient(circle, var(--accent-secondary), transparent 70%);
   opacity: 0.2;
   filter: blur(40px);
   z-index: -1;
@@ -160,7 +156,7 @@ h3 {
   }
 
   to {
-    opacity: 0.5;
+    opacity: 0.4;
     transform: scale(1.1);
   }
 }
@@ -203,13 +199,12 @@ h3 {
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.27), border-color 0.4s, box-shadow 0.4s;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.27), border-color 0.4s;
 }
 
 .card:hover {
   transform: translateY(-10px) scale(1.02);
   border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
 }
 
 .card-glow {
