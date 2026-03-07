@@ -1,330 +1,113 @@
-/* ================= PARTICLE SYSTEM ================= */
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let width, height;
+<!DOCTYPE html>
+<html lang="en">
 
-function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
-/* ================= PARTICLE SYSTEM ================= */
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let width, height;
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resize);
-resize();
+<title>Basil Eldhose | Cybersecurity & Web Developer</title>
 
-const particles = [];
-const particleCount = 80;
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
-class Particle {
-    constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.8;
-        this.vy = (Math.random() - 0.5) * 0.8;
-        this.size = Math.random() * 12 + 10;
-        this.color = Math.random() > 0.6 ? '#00ff88' : 'rgba(0, 255, 136, 0.3)';
-        this.char = Math.floor(Math.random() * 2).toString();
-    }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (Math.random() < 0.05) {
-            this.char = Math.floor(Math.random() * 2).toString();
-        }
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
-    }
-    draw() {
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = 0.5;
-        ctx.font = `${this.size}px 'Space Mono', monospace`;
-        ctx.fillText(this.char, this.x, this.y);
-    }
-}
+<link rel="stylesheet" href="style.css">
+</head>
 
-for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+<body>
 
-function animateParticles() {
-    ctx.clearRect(0, 0, width, height);
-    particles.forEach(p => {
-        p.update();
-        p.draw();
-        // Connections
-        particles.forEach(p2 => {
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 120) {
-                ctx.strokeStyle = 'rgba(0, 255, 136, 0.05)';
-                ctx.lineWidth = 0.5;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(p2.x, p2.y);
-                ctx.stroke();
-            }
-        });
-    });
-    requestAnimationFrame(animateParticles);
-}
-animateParticles();
+<audio id="bg-audio" autoplay loop>
+  <source src="audio.mpeg" type="audio/mpeg">
+</audio>
 
+<canvas id="particles"></canvas>
 
-/* ================= ANTIGRAVITY ENGINE ================= */
-const elements = document.querySelectorAll("[data-depth]");
-let mx = 0, my = 0, cx = 0, cy = 0;
+<div class="container">
 
-document.addEventListener("mousemove", e => {
-    mx = e.clientX - window.innerWidth / 2;
-    my = e.clientY - window.innerHeight / 2;
-});
+<!-- HERO -->
+<section class="hero">
 
-function animateAntigravity() {
-    cx += (mx - cx) * 0.08;
-    cy += (my - cy) * 0.08;
-    const time = performance.now() * 0.0015;
+<div class="hero-text">
+<h1>Basil <span class="highlight">Eldhose</span></h1>
 
-    elements.forEach(el => {
-        const d = parseFloat(el.getAttribute('data-depth')) || 20;
-        const x = -cx / (1000 / d);
-        const floatY = Math.sin(time + d) * (d * 0.3); // Dynamic floating based on depth
-        const y = -cy / (1000 / d) + floatY;
-        el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    });
-    requestAnimationFrame(animateAntigravity);
-}
-animateAntigravity();
+<p class="tagline">Ethical Hacker • Web Developer • Cybersecurity Student</p>
 
-/* ================= GITHUB FETCH ================= */
-// Using a default user or error handling if blank
-const USERNAME = 'basil-eldhose'; // Placeholder, user can change
+<p class="bio">
+Curious cybersecurity enthusiast exploring penetration testing,
+web security, and secure system design. I build websites,
+analyze vulnerabilities, and learn how systems break —
+so they can be made stronger.
+</p>
 
-fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated`)
-    .then(res => {
-        if (!res.ok) throw new Error("User not found");
-        return res.json();
-    })
-    .then(data => {
-        const container = document.getElementById("github-projects");
-        container.innerHTML = ''; // Clear placeholder
+<div class="buttons">
+<a href="https://github.com/" target="_blank">GitHub</a>
+<a href="#">LinkedIn</a>
+<a href="#">Contact</a>
+</div>
 
-        const list = Array.isArray(data) ? data : [];
+</div>
 
-        if (list.length === 0) {
-            // If valid user but no repos, or empty array, fall through to mock might be better?
-            // But usually empty array means just no repos.
-            // Let's force error to trigger mock data if list is empty for this demo
-            throw new Error("No repos found, triggering mock");
-        }
+<div class="profile-wrapper" data-depth="25">
+  <div class="profile-glow"></div>
+  <img src="profile.png" alt="Basil Eldhose" class="profile-img">
+</div>
 
-        list.slice(0, 4).forEach(repo => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.setAttribute("data-depth", "25");
+<div class="terminal">
+<p>> initializing portfolio...</p>
+<p>> loading security modules...</p>
+<p>> welcome basil_eldhose</p>
+</div>
 
-            card.innerHTML = `
-        <div class="card-glow"></div>
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-        <div style="margin-top:15px; font-size:0.8rem; color:#666;">
-          ⭐ ${repo.stargazers_count} • 🔠 ${repo.language || "N/A"}
-        </div>
-      `;
-            container.appendChild(card);
-        });
-    })
-    .catch(err => {
-        console.log("Fetching failed or no repos, using mock data:", err);
+</section>
 
-        // Fallback to mock data
-        const mockRepos = [
-            { name: "security-scanner", description: "Automated vulnerability scanner for web applications.", stargazers_count: 128, language: "Python" },
-            { name: "packet-sniffer", description: "Network traffic analysis tool for security auditing.", stargazers_count: 85, language: "C++" },
-            { name: "auth-guard", description: "JWT-based authentication middleware with rate limiting.", stargazers_count: 240, language: "JavaScript" },
-            { name: "zero-trust-proxy", description: "Implementation of zero trust architecture principles.", stargazers_count: 95, language: "Go" },
-        ];
+<!-- SKILLS -->
+<section class="section">
 
-        const container = document.getElementById("github-projects");
-        container.innerHTML = '';
+<h2>Skills</h2>
 
-        mockRepos.forEach(repo => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.setAttribute("data-depth", "25");
+<div class="grid">
 
-            card.innerHTML = `
-        <div class="card-glow"></div>
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-        <div style="margin-top:15px; font-size:0.8rem; color:#666;">
-          ⭐ ${repo.stargazers_count} • 🔠 ${repo.language || "N/A"}
-        </div>
-      `;
-            container.appendChild(card);
-        });
+<div class="card">
+<h3>Cybersecurity</h3>
+<p>Basic penetration testing, vulnerability discovery, secure coding awareness.</p>
+</div>
 
-    });
+<div class="card">
+<h3>Web Development</h3>
+<p>HTML, CSS, JavaScript, responsive UI design.</p>
+</div>
 
-/* ================= YOUTUBE SYNC ================= */
-// YouTube doesn't have a simple "currently playing" API like Spotify without
-// complex OAuth setups and reading a user's active history.
-// For now, this is a static embed for the requested song.
+<div class="card">
+<h3>Programming</h3>
+<p>C programming, algorithms, system thinking.</p>
+</div>
 
-const particles = [];
-const particleCount = 60;
+<div class="card">
+<h3>Tools</h3>
+<p>Git, GitHub, Linux basics, developer tooling.</p>
+</div>
 
-class Particle {
-    constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.size = Math.random() * 2;
-        this.color = Math.random() > 0.5 ? '#00ff88' : '#7000ff';
-    }
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        if (this.x < 0) this.x = width;
-        if (this.x > width) this.x = 0;
-        if (this.y < 0) this.y = height;
-        if (this.y > height) this.y = 0;
-    }
-    draw() {
-        ctx.fillStyle = this.color;
-        ctx.globalAlpha = 0.4;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
+</div>
 
-for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+</section>
 
-function animateParticles() {
-    ctx.clearRect(0, 0, width, height);
-    particles.forEach(p => {
-        p.update();
-        p.draw();
-        // Connections
-        particles.forEach(p2 => {
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 100) {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-                ctx.lineWidth = 0.5;
-                ctx.beginPath();
-                ctx.moveTo(p.x, p.y);
-                ctx.lineTo(p2.x, p2.y);
-                ctx.stroke();
-            }
-        });
-    });
-    requestAnimationFrame(animateParticles);
-}
-animateParticles();
+<!-- PROJECTS -->
+<section class="section">
 
+<h2>GitHub Projects</h2>
 
-/* ================= ANTIGRAVITY ENGINE ================= */
-const elements = document.querySelectorAll("[data-depth]");
-let mx = 0, my = 0, cx = 0, cy = 0;
+<div id="github-projects" class="grid">
+<div class="card">Loading projects...</div>
+</div>
 
-document.addEventListener("mousemove", e => {
-    mx = e.clientX - window.innerWidth / 2;
-    my = e.clientY - window.innerHeight / 2;
-});
+</section>
 
-function animateAntigravity() {
-    cx += (mx - cx) * 0.08;
-    cy += (my - cy) * 0.08;
+<footer>
+© 2026 Basil Eldhose • Security Engineering Portfolio
+</footer>
 
-    elements.forEach(el => {
-        const d = parseFloat(el.getAttribute('data-depth')) || 20;
-        const x = -cx / (1000 / d); // Smoother divisor
-        const y = -cy / (1000 / d);
-        el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    });
-    requestAnimationFrame(animateAntigravity);
-}
-animateAntigravity();
+</div>
 
-/* ================= GITHUB FETCH ================= */
-// Using a default user or error handling if blank
-const USERNAME = 'basil-eldhose'; // Placeholder, user can change
+<script src="script.js"></script>
 
-fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated`)
-    .then(res => {
-        if (!res.ok) throw new Error("User not found");
-        return res.json();
-    })
-    .then(data => {
-        const container = document.getElementById("github-projects");
-        container.innerHTML = ''; // Clear placeholder
-
-        const list = Array.isArray(data) ? data : [];
-
-        if (list.length === 0) {
-            // If valid user but no repos, or empty array, fall through to mock might be better?
-            // But usually empty array means just no repos.
-            // Let's force error to trigger mock data if list is empty for this demo
-            throw new Error("No repos found, triggering mock");
-        }
-
-        list.slice(0, 4).forEach(repo => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.setAttribute("data-depth", "25");
-
-            card.innerHTML = `
-        <div class="card-glow"></div>
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-        <div style="margin-top:15px; font-size:0.8rem; color:#666;">
-          ⭐ ${repo.stargazers_count} • 🔠 ${repo.language || "N/A"}
-        </div>
-      `;
-            container.appendChild(card);
-        });
-    })
-    .catch(err => {
-        console.log("Fetching failed or no repos, using mock data:", err);
-
-        // Fallback to mock data
-        const mockRepos = [
-            { name: "security-scanner", description: "Automated vulnerability scanner for web applications.", stargazers_count: 128, language: "Python" },
-            { name: "packet-sniffer", description: "Network traffic analysis tool for security auditing.", stargazers_count: 85, language: "C++" },
-            { name: "auth-guard", description: "JWT-based authentication middleware with rate limiting.", stargazers_count: 240, language: "JavaScript" },
-            { name: "zero-trust-proxy", description: "Implementation of zero trust architecture principles.", stargazers_count: 95, language: "Go" },
-        ];
-
-        const container = document.getElementById("github-projects");
-        container.innerHTML = '';
-
-        mockRepos.forEach(repo => {
-            const card = document.createElement("div");
-            card.className = "card";
-            card.setAttribute("data-depth", "25");
-
-            card.innerHTML = `
-        <div class="card-glow"></div>
-        <h3>${repo.name}</h3>
-        <p>${repo.description || "No description provided."}</p>
-        <div style="margin-top:15px; font-size:0.8rem; color:#666;">
-          ⭐ ${repo.stargazers_count} • 🔠 ${repo.language || "N/A"}
-        </div>
-      `;
-            container.appendChild(card);
-        });
-    });
-
+</body>
+</html>
