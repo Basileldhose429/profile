@@ -332,9 +332,6 @@
 
     @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-    .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
-    .reveal.visible { opacity: 1 !important; transform: translateY(0) !important; }
   </style>
 </head>
 <body>
@@ -434,25 +431,25 @@
 
   <!-- ══ SKILLS ══ -->
   <section id="skills">
-    <div class="sec-header reveal">
+    <div class="sec-header">
       <h2 class="glitch" data-text="analyze_skills.py">analyze_skills.py</h2>
     </div>
     <div class="skills-grid">
-      <div class="sk-card reveal">
+      <div class="sk-card">
         <h3>Offensive Security</h3>
         <p>Experienced in finding and exploiting vulnerabilities in web applications, networks, and systems using industry-standard methodologies.</p>
         <div class="tech-list">
           <span>Burp Suite</span><span>Metasploit</span><span>Nmap</span><span>Wireshark</span>
         </div>
       </div>
-      <div class="sk-card reveal" style="transition-delay:0.1s">
+      <div class="sk-card" style="transition-delay:0.1s">
         <h3>Secure Web Dev</h3>
         <p>Building hardened web applications with modern frameworks, ensuring robust authentication, input validation, and data protection.</p>
         <div class="tech-list">
           <span>JavaScript</span><span>Node.js</span><span>HTML/CSS</span><span>OWASP</span>
         </div>
       </div>
-      <div class="sk-card reveal" style="transition-delay:0.2s">
+      <div class="sk-card" style="transition-delay:0.2s">
         <h3>System & Scripting</h3>
         <p>Automating security workflows and writing custom exploit scripts or enumeration tools tailored to specific environments.</p>
         <div class="tech-list">
@@ -464,7 +461,7 @@
 
   <!-- ══ PROJECTS ══ -->
   <section id="projects">
-    <div class="sec-header reveal">
+    <div class="sec-header">
       <h2 class="glitch" data-text="ls -la /opt/projects">ls -la /opt/projects</h2>
     </div>
     <div class="proj-grid" id="github-projects">
@@ -474,11 +471,11 @@
 
   <!-- ══ CONTACT ══ -->
   <section id="contact">
-    <div class="sec-header reveal">
+    <div class="sec-header">
       <h2 class="glitch" data-text="ssh basil@contact_node">ssh basil@contact_node</h2>
     </div>
     <div class="contact-container">
-      <div class="contact-info reveal">
+      <div class="contact-info">
         <p>Open for collaboration on security research, CTFs, or freelance pentesting engagements. Secure channels established below.</p>
         <div class="c-links">
           <a href="#">EMAIL :: basil@example.com</a>
@@ -487,7 +484,7 @@
           <a href="https://www.instagram.com/1__basil_eldhose__1?igsh=MWY3MGNjdGV6YzQzYg==" target="_blank">INSTAGRAM :: @1__basil_eldhose__1</a>
         </div>
       </div>
-      <div class="contact-form reveal" style="transition-delay:0.1s">
+      <div class="contact-form" style="transition-delay:0.1s">
         <div class="input-grp">
           <input type="text" placeholder="Incoming_Identity (Name)">
         </div>

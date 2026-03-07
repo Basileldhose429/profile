@@ -125,8 +125,7 @@ fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated`)
       const card = document.createElement("a");
       card.href = repo.html_url;
       card.target = "_blank";
-      // Removed 'reveal' to prevent them from staying invisible, added 'visible' to skip animation tracking
-      card.className = "pj-card visible";
+      card.className = "pj-card";
       
       card.innerHTML = `
         <div class="pj-title">${repo.name}</div>
@@ -155,8 +154,7 @@ fetch(`https://api.github.com/users/${USERNAME}/repos?sort=updated`)
     mockRepos.forEach(repo => {
       const card = document.createElement("a");
       card.href = "#";
-      // Removed 'reveal' to prevent them from staying invisible, added 'visible'
-      card.className = "pj-card visible";
+      card.className = "pj-card";
       
       card.innerHTML = `
         <div class="pj-title">${repo.name}</div>
