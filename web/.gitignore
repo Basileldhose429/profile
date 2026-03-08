@@ -1,0 +1,15 @@
+# Ignore large unrelated files
+*.exe
+*.zip
+*.mpeg
+*.mp4
+*.docx
+*.pptx
+*.jpeg
+*.jpg
+
+# Keep web files
+!index.html
+!style.css
+!script.js
+!profile.png

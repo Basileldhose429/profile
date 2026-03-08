@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basil Eldhose — Security Engineer</title>
+    <meta name="description" content="Basil Eldhose — Cybersecurity Engineer & Ethical Hacker. Breaking systems to make them stronger.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,700;0,900;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+    <div id="cursor-follower"></div>
+
+    <!-- CRT Global Overlay -->
+    <div class="crt-overlay" aria-hidden="true"></div>
+
+    <!-- Global glitch flicker bar -->
+    <div class="glitch-bar" id="glitch-bar" aria-hidden="true"></div>
+
+    <!-- ── LOADER ── -->
+    <div id="loader">
+        <div class="loader-inner">
+            <div class="loader-label">[ BOOTING SECURE OS v2.5.1 ]</div>
+            <div class="loader-hex" id="loader-hex">0x0000</div>
+            <div class="loader-num" id="loader-num">0</div>
+            <div class="loader-track">
+                <div class="loader-fill" id="loader-fill"></div>
+            </div>
+            <div class="loader-boot-log" id="loader-boot-log">
+                <span>&gt; AUTH MODULE LOADED</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── FULL-SCREEN NAV OVERLAY ── -->
+    <div id="nav-overlay" aria-hidden="true">
+        <ul class="nav-big-links">
+            <li><a href="#home" class="nav-link-item">HOME</a></li>
+            <li><a href="#intro" class="nav-link-item">ABOUT</a></li>
+            <li><a href="#services" class="nav-link-item">SERVICES</a></li>
+            <li><a href="#work" class="nav-link-item">WORK</a></li>
+            <li><a href="#contact" class="nav-link-item">CONTACT</a></li>
+        </ul>
+        <div class="nav-footer-info">
+            <a href="mailto:basileldhose429@gmail.com">basileldhose429@gmail.com</a>
+            <a href="tel:+919496002311">+91 9496002311</a>
+            <div class="nav-socials">
+                <a href="https://github.com/Basileldhose429" target="_blank">GitHub</a>
+                <a href="https://www.linkedin.com/in/basil-eldhose-74204537b" target="_blank">LinkedIn</a>
+                <a href="https://www.instagram.com/1__basil_eldhose__1" target="_blank">Instagram</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── STICKY HEADER ── -->
+    <header id="site-header">
+        <div class="header-logo">BE</div>
+        <!-- Live hex status ticker -->
+        <div class="header-status" id="header-status" aria-label="System status">
+            <span class="status-dot"></span>
+            <span id="hex-ticker">0xBE :: SYS_OK</span>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <!-- ═══════════════════════════════════ -->
+    <!--  SECTION 1 — HERO (SPIDER-MAN)     -->
+    <!-- ═══════════════════════════════════ -->
+    <section id="home" class="section hero-section">
+        <!-- Watermark text rows -->
+        <div class="hero-watermark" aria-hidden="true">
+            <p>I AM IRON MAN&nbsp;&nbsp;GENIUS BILLIONAIRE&nbsp;&nbsp;I AM IRON MAN&nbsp;&nbsp;GENIUS BILLIONAIRE</p>
+            <p>MARK L&nbsp;&nbsp;JARVIS ONLINE&nbsp;&nbsp;EXTREMIS ACTIVATED&nbsp;&nbsp;MARK L&nbsp;&nbsp;JARVIS ONLINE</p>
+            <p>I AM IRON MAN&nbsp;&nbsp;GENIUS BILLIONAIRE&nbsp;&nbsp;I AM IRON MAN&nbsp;&nbsp;GENIUS BILLIONAIRE</p>
+        </div>
+
+        <!-- Portrait with mask-reveal effect -->
+        <div class="hero-portrait-wrap" id="portrait-wrap">
+            <!-- Base: normal photo -->
+            <img class="portrait-base" src="profile.png" alt="Basil Eldhose">
+            <!-- Overlay: tinted red / mask look, revealed via clip-path -->
+            <div class="portrait-mask-layer" id="mask-layer">
+                <!-- Iron Man gold tint: sepia + warm amber hue-rotate -->
+                <img class="portrait-mask-img" src="profile.png" alt="" style="filter: sepia(1) saturate(4) hue-rotate(30deg) brightness(1.1) contrast(1.2);">
+            </div>
+            <!-- Scanline sweep -->
+            <div class="scanline" aria-hidden="true"></div>
+        </div>
+
+        <div class="hero-bottom-bar">
+            <div class="hero-role">
+                <span class="badge">GENIUS · SECURITY ENGINEER · ETHICAL HACKER</span>
+            </div>
+            <div class="hero-name-block">
+                <h1 class="hero-name" data-text="BASIL ELDHOSE">BASIL ELDHOSE</h1>
+            </div>
+        </div>
+        <!-- Cyber corner decorators -->
+        <div class="cyber-corner tl" aria-hidden="true"><span>SYS://ROOT</span></div>
+        <div class="cyber-corner tr" aria-hidden="true"><span id="hero-clock">00:00:00</span></div>
+        <div class="cyber-corner bl" aria-hidden="true"><span>LAT: 10.2374 N</span></div>
+        <div class="cyber-corner br" aria-hidden="true"><span>THREAT_LVL: LOW</span></div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!--  SECTION 2 — INTRO / ABOUT         -->
+    <!-- ═══════════════════════════════════ -->
+    <section id="intro" class="section intro-section">
+        <!-- Floating parallax keywords -->
+        <div class="float-cloud" aria-hidden="true">
+            <span style="--tx:-60px;--ty:-80px;--r:-12deg">Zero-Trust</span>
+            <span style="--tx:200px;--ty:40px;--r:8deg">Penetration</span>
+            <span style="--tx:-140px;--ty:160px;--r:-6deg">Network</span>
+            <span style="--tx:320px;--ty:-60px;--r:14deg">Cloud</span>
+            <span style="--tx:60px;--ty:220px;--r:-10deg">Linux</span>
+            <span style="--tx:-220px;--ty:80px;--r:4deg">SIEM</span>
+        </div>
+
+        <div class="intro-inner container">
+            <p class="eyebrow" data-reveal>WHERE DEFENSE MEETS INNOVATION, PROTECTION STARTS.</p>
+            <h2 class="intro-name" data-reveal>BASIL ELDHOSE</h2>
+            <p class="intro-sub" data-reveal>
+                TRANSFORMING COMPLEX THREATS INTO IRONCLAD DEFENSES<br>
+                USING ZERO-TRUST ARCHITECTURE, PENETRATION TESTING,<br>
+                AND INCIDENT RESPONSE.
+            </p>
+        </div>
+    </section>
+
+    <!-- ── BINARY DATA STRIP ── -->
+    <div class="binary-strip" aria-hidden="true" id="binary-strip">
+        01001000 00100000 01000001 01000011 01001011 00100000 01010100 01001000 00100000 01010000 01001100 01000001 01001110 01000101 01010100
+    </div>
+
+    <!-- ═══════════════════════════════════ -->
+    <!--  SECTION 3 — SERVICES / ARSENAL    -->
+    <!-- ═══════════════════════════════════ -->
+    <section id="services" class="section services-section dark-section">
+        <div class="container">
+            <h2 class="section-title" data-reveal>TECHNICAL ARSENAL</h2>
+
+            <ul class="service-list" role="list">
+                <li class="service-item" data-reveal>
+                    <div class="service-num">01</div>
+                    <div class="service-body">
+                        <h3>PENETRATION TESTING</h3>
+                        <p>Network Mapping, Exploit Development, Kali Linux, Burp Suite, Metasploit, CVE Research</p>
+                    </div>
+                    <span class="service-arrow">↗</span>
+                </li>
+                <li class="service-item" data-reveal>
+                    <div class="service-num">02</div>
+                    <div class="service-body">
+                        <h3>SECURE ARCHITECTURE</h3>
+                        <p>Zero-Trust Design, IAM Policies, Cloud Security (AWS/Azure), VPC Hardening</p>
+                    </div>
+                    <span class="service-arrow">↗</span>
+                </li>
+                <li class="service-item" data-reveal>
+                    <div class="service-num">03</div>
+                    <div class="service-body">
+                        <h3>INCIDENT RESPONSE</h3>
+                        <p>SIEM Monitoring, Log Forensics, Threat Hunting, MITRE ATT&CK Framework</p>
+                    </div>
+                    <span class="service-arrow">↗</span>
+                </li>
+                <li class="service-item" data-reveal>
+                    <div class="service-num">04</div>
+                    <div class="service-body">
+                        <h3>AUTOMATION &amp; TOOLING</h3>
+                        <p>Python, Bash Scripting, Docker, CI/CD Security Gates, Custom Tooling</p>
+                    </div>
+                    <span class="service-arrow">↗</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!--  SECTION 4 — ABOUT ME              -->
+    <!-- ═══════════════════════════════════ -->
+    <section id="about-detail" class="section about-section">
+        <div class="container about-grid">
+            <div class="about-photo-col" data-reveal>
+                <div class="about-photo-frame">
+                    <img src="profile.png" alt="Basil Eldhose — Profile">
+                </div>
+            </div>
+            <div class="about-text-col" data-reveal>
+                <h2 class="about-heading">PASSIONATE ABOUT<br>ZERO-TRUST<br>ARCHITECTURE</h2>
+                <p>I am <strong>Basil Eldhose</strong>, a Security Engineer with a deep passion for proactive defense and building resilient systems from the ground up. I specialize in identifying hidden vulnerabilities before malicious actors do.</p>
+                <p>From large-scale network audits to building fully automated incident-response pipelines, my mission is to outmaneuver threats in real time — operating at the speed of zero gravity.</p>
+                <div class="about-tags">
+                    <span>Pen Testing</span><span>Zero-Trust</span><span>Python</span><span>Bash</span>
+                    <span>Cryptography</span><span>Cloud IAM</span><span>SIEM</span><span>Linux</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════ -->
+    <!--  SECTION 5 — WORK / PROJECTS       -->
+    <!-- ═══════════════════════════════════ -->
+    <section id="work" class="section work-section">
+        <div class="container">
+            <h2 class="section-title" data-reveal>FEATURED PROJECTS</h2>
+
+            <ul class="project-list" role="list">
+                <li class="project-row" data-reveal
+                    data-img="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1000">
+                    <div class="project-row-inner">
+                        <span class="project-num">01</span>
+                        <h3 class="project-title">Orbit Scanner</h3>
+                    </div>
+                    <div class="project-meta">
+                        <div class="project-tags"><span>Python</span><span>Bash</span><span>Security</span></div>
+                        <span class="project-type">CYBERSECURITY TOOL</span>
+                    </div>
+                </li>
+                <li class="project-row" data-reveal
+                    data-img="https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=1000">
+                    <div class="project-row-inner">
+                        <span class="project-num">02</span>
+                        <h3 class="project-title">Aegis Protocol</h3>
+                    </div>
+                    <div class="project-meta">
+                        <div class="project-tags"><span>Architecture</span><span>Cloud IAM</span></div>
+                        <span class="project-type">SECURITY RESEARCH</span>
+                    </div>
+                </li>
+                <li class="project-row" data-reveal
+                    data-img="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1000">
+                    <div class="project-row-inner">
+                        <span class="project-num">03</span>
+                        <h3 class="project-title">Gravity Network</h3>
+                    </div>
+                    <div class="project-meta">
+                        <div class="project-tags"><span>WireGuard</span><span>Intrusion Detection</span></div>
+                        <span class="project-type">NETWORK DEFENSE</span>
+                    </div>
+                </li>
+                <li class="project-row" data-reveal
+                    data-img="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=1000">
+                    <div class="project-row-inner">
+                        <span class="project-num">04</span>
+                        <h3 class="project-title">Crypto Vault</h3>
+                    </div>
+                    <div class="project-meta">
+                        <div class="project-tags"><span>Rust</span><span>Cryptography</span></div>
+                        <span class="project-type">DATA ENCRYPTION</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Floating project image that follows cursor -->
+        <div id="project-img-preview" aria-hidden="true"></div>
+    </section>
+
+    <!-- ── MARQUEE TICKER ── -->
+    <div class="ticker-wrap dark-section">
+        <div class="ticker-track">
+            <span class="ticker-word">EXCELLENCE</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">INNOVATION</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">PRECISION</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">TRUST</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">EXCELLENCE</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">INNOVATION</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">PRECISION</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">TRUST</span>
+            <span class="ticker-sep">✦</span>
+            <span class="ticker-word">EXCELLENCE</span>
+            <span class="ticker-sep">✦</span>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════ -->
+    <!--  SECTION 6 — CONTACT & FOOTER      -->
+    <!-- ═══════════════════════════════════ -->
+    <footer id="contact" class="section footer-section dark-section">
+        <div class="container">
+            <p class="footer-cta-quote" data-reveal>
+                "Let's build a memorable &amp; inspiring<br>cybersecurity posture together."
+            </p>
+            <div class="footer-contact-block" data-reveal>
+                <h2 class="footer-big-title">CONTACT US</h2>
+                <div class="footer-links">
+                    <a href="mailto:basil@example.com" class="footer-contact-link">basil@example.com</a>
+                    <a href="tel:+919496002311" class="footer-contact-link">+91 9496002311</a>
+                </div>
+                <div class="footer-socials">
+                    <a href="https://github.com/Basileldhose429" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/basil-eldhose-74204537b" target="_blank">LinkedIn</a>
+                    <a href="https://www.instagram.com/1__basil_eldhose__1" target="_blank">Instagram</a>
+                </div>
+            </div>
+            <div class="footer-tagline">JUST IMAGINE, I SECURE IT</div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
